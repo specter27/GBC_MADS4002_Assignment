@@ -5,7 +5,5 @@
 //  Created by Harshit Malhotra on 2022-03-01.
 //
 
-import Foundation
-
-print("Hello, World!")
-
+print("calling the GameCharacter class")
+let hero = GameCharcter()
