@@ -6,4 +6,4 @@
 //
 
 print("calling the GameCharacter class")
-let hero = GameCharcter()
+
