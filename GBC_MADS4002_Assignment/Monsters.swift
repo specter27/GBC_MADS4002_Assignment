@@ -7,5 +7,25 @@
 
 import Foundation
 class Monsters : GameCharcter{
-    var attackPower:Int = 0
+    // -strored properties
+    var attackPower:Int
+    
+    override init(name: String, abilityToAttack : Bool, abilityToDamage : Bool) {
+        
+        // #1. intialize the child class unique properties
+        self.attackPower = Int.random(in: 10...88)
+        
+        // #2. call parent intializer
+        super.init(name: name, abilityToAttack: abilityToAttack, abilityToDamage: abilityToDamage)
+    }
+}
+
+// -providing a custom respresentation of the instance to string
+// equivalent of toString() in Java
+extension Monsters: CustomStringConvertible {
+    var description: String {
+        get {
+            return "Monster Name: \(super.name) \n"
+        }
+    }
 }

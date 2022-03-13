@@ -9,4 +9,9 @@ import Foundation
 class Heros : GameCharcter{
     var weaponStrength:Int = 0
     var abilityToSneak:Bool = false
+    
+    enum actions: CaseIterable {
+        case attack,sneak,run_away
+    }
+
 }
