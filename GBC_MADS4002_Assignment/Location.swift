@@ -9,8 +9,9 @@ import Foundation
 class Location {
     
     // -Stored Properties
-    private let locationName:String
-    private let monster:Monsters
+    let locationName:String
+    let monster:Monsters
+
     // - Computed properties (always var, never let)
     private var storedAstridIsHere: Bool = false
     var astridIsHere:Bool {
@@ -37,7 +38,7 @@ class Location {
 extension Location: CustomStringConvertible {
     var description: String {
         get {
-            return "Location Name: \(self.locationName) \n"
+            return self.locationName
         }
     }
 }
