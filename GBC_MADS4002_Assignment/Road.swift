@@ -9,7 +9,7 @@ class Road {
     // -Stored Properties
     private let startingLocation:Location
     private let endingLocation:Location?
-    private let typeofRoad: RoadType
+    let typeofRoad: RoadType
     
     // -computed Properties
     // -getRandomRoadType will be used while generating maps
@@ -17,6 +17,7 @@ class Road {
         get{
             /**
              Initializing from a Raw Value
+
              If you define an enumeration with a raw-value type, the enumeration automatically receives an initializer that takes a value of the raw value’s type (as a parameter called rawValue) and returns either an enumeration case or nil.
              */
             return RoadType(rawValue: Int.random(in: 1...3))!

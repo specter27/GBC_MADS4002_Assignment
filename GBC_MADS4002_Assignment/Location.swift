@@ -11,6 +11,7 @@ class Location {
     // -Stored Properties
     let locationName:String
     let monster:Monsters
+
     // - Computed properties (always var, never let)
     private var storedAstridIsHere: Bool = false
     var astridIsHere:Bool {

@@ -7,7 +7,7 @@
 
 import Foundation
 class Monsters : GameCharcter{
-    
+  
     // -strored properties
     var attackPower:Int
     

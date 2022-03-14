@@ -14,6 +14,9 @@ class SearchForLove {
     private var rescueCompletionStatus: Bool
     // -hero of the game
     private var hero: Heros
+  
+    var pathToAstrid:[Location]?=[];
+  
     // - a. Making the worldLocations copy to generateWorldMap with *UNIQUE* Location
     var copyofWorldLocations: [String]
     
@@ -86,11 +89,85 @@ class SearchForLove {
         
     }
     
+
+    
+    func findAstrid(mapOrigin:Map)->[Location]?
+        {
+            if(mapOrigin.nextMapNode==nil)
+            {
+                print("searching \(mapOrigin.currentLocation)",terminator: "");
+                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
+                {
+                    print("Astrid found at \(mapOrigin.currentLocation)")
+                    pathToAstrid?.append(mapOrigin.currentLocation)
+                    print("astrid at final \(pathToAstrid!)")
+                    return pathToAstrid;
+                }
+                else
+                {
+                    print("Astrid is not on the map \n");
+                }
+            }
+            else
+            {
+                print("searching \(mapOrigin.currentLocation)",terminator: "");
+                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
+                {
+                    pathToAstrid?.append(mapOrigin.currentLocation)
+                    print("Astrid found at \(mapOrigin.currentLocation)")
+                    print(pathToAstrid!)
+                    return pathToAstrid
+                }
+                else
+                {
+                    for i in getRoadsGoingOut(startLocationDetails: mapOrigin.currentLocation)
+                    {
+                        if(i.typeofRoad==RoadType.PAVED)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                        else if(i.typeofRoad==RoadType.SWAMP)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                        else if(i.typeofRoad==RoadType.MOUNTAIN)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                    }
+                    //pathToAstrid?.append(mapOrigin.currentLocation)
+                    //print("Astrid not found, moving to next city");
+                }
+                findAstrid(mapOrigin: mapOrigin.nextMapNode!);
+            }
+            return nil
+        }
+        
+        func isAstridHere(currentLocation:Location)->Bool
+        {
+            if(currentLocation.astridIsHere==true)
+            {
+                return true
+            }
+            return false;
+        }
+
     // -This function will give a random Map Node for the World Map
     func getMapNode(randomLocationIndex: Int, randomMonsterIndex: Int) -> Map{
         
         // #1. Creating Monster & Location objects
+
         let generatedMonster  = Monsters(name: copyofMonsterNames[randomMonsterIndex])
+
         let generatedLocation = Location(locationName: copyofWorldLocations[randomLocationIndex], monster: generatedMonster)
         
         // #2. Generating Map Node with the generatedLocation
@@ -118,9 +195,9 @@ class SearchForLove {
     // This function will place astrid at a random Location on the World Map
     func placeAstrid(mapOrigin: Map){
         var count = 1
-        let randomLocationIndex = Int.random(in: 1...10)
+        let randomLocationIndex = Int.random(in: 1...15)
         var currentMapNode: Map = mapOrigin
-        
+      
         while(currentMapNode.nextMapNode != nil){
             if(count == randomLocationIndex){
                 // putting astrid at random location
@@ -129,8 +206,7 @@ class SearchForLove {
                 print("Astrid is placed at: \(currentMapNode.currentLocation)")
                 break
             }else{
-                count+=1
-                print("count: \(count)")
+                count += 1
                 currentMapNode = currentMapNode.nextMapNode!
             }
         }
@@ -293,5 +369,6 @@ class SearchForLove {
     func getHeroMoves(){
         print("Hugie, what move will you make?\n   1. Attack\n   2. Sneak\n   3. Give Up\nEnter choice: ")
     }
+
 
 }

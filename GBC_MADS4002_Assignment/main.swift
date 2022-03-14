@@ -4,6 +4,7 @@
 //
 //  Created by Harshit Malhotra on 2022-03-01.
 
+
 let game = SearchForLove()
 // -Generating the World Map
 let origin = game.generateWorldMap()
