@@ -4,11 +4,13 @@
 //
 //  Created by Harshit Malhotra on 2022-03-09.
 //
-
+import Foundation
 class SearchForLove {
     
     private let worldLocations: [String]
     private let monsterNames: [String]
+    private var searchCompleteionStatus:Bool=false;
+    var pathToAstrid:[Location]?=[];
     // - a. Making the worldLocations copy to generateWorldMap with *UNIQUE* Location
     var copyofWorldLocations: [String]
     
@@ -77,6 +79,81 @@ class SearchForLove {
         
     }
     
+    
+    func findAstrid(mapOrigin:Map)->[Location]?
+        {
+            if(mapOrigin.nextMapNode==nil)
+            {
+                print("searching \(mapOrigin.currentLocation)",terminator: "");
+                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
+                {
+                    print("Astrid found at \(mapOrigin.currentLocation)")
+                    pathToAstrid?.append(mapOrigin.currentLocation)
+                    print("astrid at final \(pathToAstrid!)")
+                    return pathToAstrid;
+                }
+                else
+                {
+                    print("Astrid is not on the map \n");
+                }
+            }
+            else
+            {
+                print("searching \(mapOrigin.currentLocation)",terminator: "");
+                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
+                {
+                    pathToAstrid?.append(mapOrigin.currentLocation)
+                    print("Astrid found at \(mapOrigin.currentLocation)")
+                    print(pathToAstrid!)
+                    return pathToAstrid
+                }
+                else
+                {
+                    for i in getRoadsGoingOut(startLocationDetails: mapOrigin.currentLocation)
+                    {
+                        if(i.typeofRoad==RoadType.PAVED)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                        else if(i.typeofRoad==RoadType.SWAMP)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                        else if(i.typeofRoad==RoadType.MOUNTAIN)
+                        {
+                            print("type of road is \(i.typeofRoad)")
+                            pathToAstrid?.append(mapOrigin.currentLocation)
+                            print("Astrid not found, moving to next city");
+                            break;
+                        }
+                    }
+                    //pathToAstrid?.append(mapOrigin.currentLocation)
+                    //print("Astrid not found, moving to next city");
+                }
+                findAstrid(mapOrigin: mapOrigin.nextMapNode!);
+            }
+            return nil
+        }
+        
+        func isAstridHere(currentLocation:Location)->Bool
+        {
+            if(currentLocation.astridIsHere==true)
+            {
+                return true
+            }
+            return false;
+        }
+
+    
+    
+    
+    
     // -This function will give a random Map Node for the World Map
     func getMapNode(randomLocationIndex: Int, randomMonsterIndex: Int) -> Map{
         
@@ -108,11 +185,9 @@ class SearchForLove {
     }
     // This function will place astrid at a random Location on the World Map
     func placeAstrid(mapOrigin: Map){
-
         var count = 1
-        let randomLocationIndex = Int.random(in: 1...10)
+        let randomLocationIndex = Int.random(in: 1...15)
         var currentMapNode: Map = mapOrigin
-        
         while(currentMapNode.nextMapNode != nil){
             if(count == randomLocationIndex){
                 // putting astrid at random location
@@ -121,7 +196,7 @@ class SearchForLove {
                 print("Astrid is placed at: \(currentMapNode.currentLocation)")
                 break
             }else{
-                count += count
+                count += 1
                 currentMapNode = currentMapNode.nextMapNode!
             }
         }
@@ -139,22 +214,39 @@ class SearchForLove {
         print("1. Search for Astrid \n2. Rescue Astrid \n3. Quit \nEnter choice: ")
     }
     // -This function will validate the userInput and return as per result.
-    func validateInput(userInput: String?) -> Bool{
+    func validateInput(userInput: String?, mapOrigin: Map) -> Bool{
         var validationResult: Bool = false
         var validInput: Int = Int.min
         if(userInput == nil ){
             validationResult = false
             print("Invalid selection, try again.")
-        }else{
-            let inputValue = Int(userInput!) ?? -1
-            if(inputValue == 1 || inputValue == 2 || inputValue == 3){
-                validationResult = false
-                validInput = inputValue
-            }else{
-                print("Invalid selection, try again.")
-            }
         }
-        print("\(validInput)")
+        else
+        {
+            let inputValue = Int(userInput!) ?? -1
+            switch(inputValue)
+            {
+                case 1:
+                    findAstrid(mapOrigin: mapOrigin)
+                    validationResult = false
+                    validInput = inputValue
+                case 2:
+                    validationResult = false
+                    validInput = inputValue
+                case 3:
+                    exit(0)
+                default:
+                    print("Invalid selection, try again.")
+            }
+            //if(inputValue == 1 || inputValue == 2 || inputValue == 3){
+            //   validationResult = false
+            //    validInput = inputValue
+            //}
+            //else{
+            //    print("Invalid selection, try again.")
+            // }
+        }
+        //print("\(validInput)")
         return validationResult
     }
 

@@ -19,7 +19,7 @@ game.options()
 // -Reading the user input
 var userInput = readLine()
 // -Compeling user to provide valid input as per the game options
-while(!game.validateInput(userInput: userInput)){
+while(!game.validateInput(userInput: userInput, mapOrigin: origin)){
     game.options()
     userInput = readLine()
 }

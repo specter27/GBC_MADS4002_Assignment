@@ -9,7 +9,7 @@ class Road {
     // -Stored Properties
     private let startingLocation:Location
     private let endingLocation:Location?
-    private let typeofRoad: RoadType
+    let typeofRoad: RoadType
     
     // -computed Properties
     // - getRandomRoadType will be used while generating maps
