@@ -9,17 +9,21 @@ let game = SearchForLove()
 // -Generating the World Map
 let origin = game.generateWorldMap()
 // -Placing Astrid on the Map
-game.placeAstrid(mapOrigin: origin)
+var astridPlacementStatus = game.placeAstrid(mapOrigin: origin)
 // -Displaying the Game Description
 game.description()
 
 // -Check for game status
 var gameEnds: Bool = false
+var pathToAstrid: [Location] = []
 while(!gameEnds){
     // -Displaying the Game's Main Menu
     mainMenu()
 }
 print("---------------Search For Love Game Ends---------------- \n")
+
+
+
 
 func mainMenu(){
     // -Displaying the Game options
@@ -33,16 +37,14 @@ func mainMenu(){
     }
     
     // -Performing different game operations as per user Input
-    switch(Int(userInput!)!){
-    case 1:
-        pathToAstrid = game.searchAstrid(mapOrigin: origin)
-    case 2:
+    let inputValue = Int(userInput!)!
+    if(inputValue == 1){
+        pathToAstrid = game.searchAstrid(mapOrigin: origin, astridPlacementStatus: astridPlacementStatus)
+    }else if(inputValue == 2){
         game.rescueAstrid(pathToAstrid: pathToAstrid)
-    case 3:
+    }else{
         // -The game ends
         gameEnds = true
-        print("Bye!")
-    default:
         print("Bye!")
     }
 }

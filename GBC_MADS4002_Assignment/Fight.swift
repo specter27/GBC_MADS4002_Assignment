@@ -68,12 +68,12 @@ class Fight{
             // checking if the attack is CRITICAL MISS or not
             if(self.monster.isAttackCriticalMiss){
                 damageCaused = 0
-                print("\n*** \(from) attacks: \(damageCaused) damage!")
+                print("\n*** \(to) attacks: \(damageCaused) damage!")
                 print("*** \(monster) MISSED!\n")
                 self.hero.takeDamage(amt: damageCaused)
             }else{
                 damageCaused = self.monster.attackPower
-                print("\n*** \(from) attacks: \(damageCaused) damage!")
+                print("\n*** \(to) attacks: \(damageCaused) damage!")
                 self.hero.takeDamage(amt: damageCaused)
             }
         }

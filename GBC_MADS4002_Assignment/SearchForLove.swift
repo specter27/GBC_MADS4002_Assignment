@@ -15,8 +15,6 @@ class SearchForLove {
     // -hero of the game
     private var hero: Heros
   
-    var pathToAstrid:[Location]?=[];
-  
     // - a. Making the worldLocations copy to generateWorldMap with *UNIQUE* Location
     var copyofWorldLocations: [String]
     
@@ -89,78 +87,6 @@ class SearchForLove {
         
     }
     
-
-    
-    func findAstrid(mapOrigin:Map)->[Location]?
-        {
-            if(mapOrigin.nextMapNode==nil)
-            {
-                print("searching \(mapOrigin.currentLocation)",terminator: "");
-                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
-                {
-                    print("Astrid found at \(mapOrigin.currentLocation)")
-                    pathToAstrid?.append(mapOrigin.currentLocation)
-                    print("astrid at final \(pathToAstrid!)")
-                    return pathToAstrid;
-                }
-                else
-                {
-                    print("Astrid is not on the map \n");
-                }
-            }
-            else
-            {
-                print("searching \(mapOrigin.currentLocation)",terminator: "");
-                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
-                {
-                    pathToAstrid?.append(mapOrigin.currentLocation)
-                    print("Astrid found at \(mapOrigin.currentLocation)")
-                    print(pathToAstrid!)
-                    return pathToAstrid
-                }
-                else
-                {
-                    for i in getRoadsGoingOut(startLocationDetails: mapOrigin.currentLocation)
-                    {
-                        if(i.typeofRoad==RoadType.PAVED)
-                        {
-                            print("type of road is \(i.typeofRoad)")
-                            pathToAstrid?.append(mapOrigin.currentLocation)
-                            print("Astrid not found, moving to next city");
-                            break;
-                        }
-                        else if(i.typeofRoad==RoadType.SWAMP)
-                        {
-                            print("type of road is \(i.typeofRoad)")
-                            pathToAstrid?.append(mapOrigin.currentLocation)
-                            print("Astrid not found, moving to next city");
-                            break;
-                        }
-                        else if(i.typeofRoad==RoadType.MOUNTAIN)
-                        {
-                            print("type of road is \(i.typeofRoad)")
-                            pathToAstrid?.append(mapOrigin.currentLocation)
-                            print("Astrid not found, moving to next city");
-                            break;
-                        }
-                    }
-                    //pathToAstrid?.append(mapOrigin.currentLocation)
-                    //print("Astrid not found, moving to next city");
-                }
-                findAstrid(mapOrigin: mapOrigin.nextMapNode!);
-            }
-            return nil
-        }
-        
-        func isAstridHere(currentLocation:Location)->Bool
-        {
-            if(currentLocation.astridIsHere==true)
-            {
-                return true
-            }
-            return false;
-        }
-
     // -This function will give a random Map Node for the World Map
     func getMapNode(randomLocationIndex: Int, randomMonsterIndex: Int) -> Map{
         
@@ -193,8 +119,10 @@ class SearchForLove {
         return roadsToNextNode
     }
     // This function will place astrid at a random Location on the World Map
-    func placeAstrid(mapOrigin: Map){
+    func placeAstrid(mapOrigin: Map) -> Bool{
         var count = 1
+        // -stores weather the astrid is being placed on the map or not
+        var astridPlaced: Bool = false
         let randomLocationIndex = Int.random(in: 1...15)
         var currentMapNode: Map = mapOrigin
       
@@ -202,6 +130,8 @@ class SearchForLove {
             if(count == randomLocationIndex){
                 // putting astrid at random location
                 currentMapNode.currentLocation.astridIsHere = true
+                // -As astrid is being successfully placed
+                astridPlaced = true
                 // description variable will be called
                 print("Astrid is placed at: \(currentMapNode.currentLocation)")
                 break
@@ -210,8 +140,7 @@ class SearchForLove {
                 currentMapNode = currentMapNode.nextMapNode!
             }
         }
-        
-        
+        return astridPlaced
     }
     
     // -This function will display the game descrition & story to the user
@@ -227,59 +156,87 @@ class SearchForLove {
     func validateInput(userInput: String?) -> Bool{
         var validationResult: Bool = false
         if(userInput == nil ){
-            print("Invalid selection, try again.")
+            print("Invalid selection, try again.\n")
         }else{
             let inputValue = Int(userInput!) ?? -1
             if(inputValue == 1 || inputValue == 2 || inputValue == 3){
                 validationResult = true
             }else{
-                print("Invalid selection, try again.")
+                print("Invalid selection, try again.\n")
             }
         }
         return validationResult
     }
     
-//    func searchAstrid(mapOrigin:Map) -> [Location]{
-        
-        // if the astrid is not on the map then don't update the searchCompletionStatus to TRUE Otherwise do update the searchCompletionStatus to TRUE
-        
-        
-//        if(mapOrigin.nextMapNode==nil) {
-//            print("searching \(mapOrigin.currentLocation)",terminator: "");
-//            if(isAstridHere(currentLocation: mapOrigin.currentLocation)) {
-//                print("Astrid found")
-//            } else {
-//                print("Astrid is not on the map \n");
-//            }
-//        } else {
-//                print("searching \(mapOrigin.currentLocation)",terminator: "");
-//                if(isAstridHere(currentLocation: mapOrigin.currentLocation))
-//                {
-//                    print("Astrid found")
-//                }
-//                else
-//                {
-//                    print("Astrid not found, moving to next city");
-//                }
-//                traverseMap(mapOrigin: mapOrigin.nextMapNode!);
-//            }
-//        }
+    /**This Method will Search astrid on the World Map and Return a Location Array for th epath leading to astrid if that exist**/
+    
+    func searchAstrid(mapOrigin: Map, astridPlacementStatus: Bool) -> [Location]{
+    
+        var currentMapNode = mapOrigin
+        var hasNextNode: Bool = true
+        var pathToAstrid:[Location] = []
+        // -checking weather the astrid is on the map or not
+        if(astridPlacementStatus){
+            print("Starting the search for Astrid")
+            while(hasNextNode){
+                // -Adding the location in the pathToAstrid
+                pathToAstrid.append(currentMapNode.currentLocation)
+                // -Displaying the Location details while Traversing
+                print("   Searching \(currentMapNode.currentLocation): \(currentMapNode.currentLocation.astridIsHere ? " Astrid found!\n\n": " Astrid not found, moving to next city")")
+                
+                // #1. Checking weather astrid is at the Location or Not
+                if(currentMapNode.currentLocation.astridIsHere){
+                    print("\n\nAstrid is in \(currentMapNode.currentLocation)\n\n---------------------------------------\n")
+                    break
+                }
+                // #2. Checking the existence of the easiest road (RAREST CASE)
+                if(currentMapNode.roadsLeadingOut.count == 0){
+                    print("No Roads Leading out of the \(currentMapNode.currentLocation)")
+                    break
+                }
+                // -updating the current node
+                if(currentMapNode.nextMapNode != nil){
+                    currentMapNode = currentMapNode.nextMapNode!
+                }else{
+                    hasNextNode = false
+                }
+            }
+        }else{
+            traverseWorldMap(mapOrigin: mapOrigin)
+            print("Astrid is not on the map \n\n\n---------------------------------------\n");
+        }
+        // -Updating the searchCompletionStatus to TRUE as search is completed
+        self.searchCompletionStatus = true
+        return pathToAstrid
+    }
+    
+    // -This Function will simply Traverse the World Map & Display the Location details while Traversing
+    func traverseWorldMap(mapOrigin: Map){
+        var currentMapNode = mapOrigin
+        print("Starting the search for Astrid")
+        while(currentMapNode.nextMapNode != nil){
+            print("   Searching \(currentMapNode.currentLocation): Astrid not found, moving to next city")
+            currentMapNode = currentMapNode.nextMapNode!
+        }
+        // -Displaying the last or terminus Map Node Location Details
+        print("   Searching \(currentMapNode.currentLocation): Astrid not found, moving to next city")
+    }
+    
     
     
     // -This function will execute the Rescue Sequence
     func rescueAstrid(pathToAstrid: [Location]){
-        
         // checking if the astrid is on the map and is being searched by the user
         if(searchCompletionStatus && pathToAstrid.count == 0){
             print("Astrid is Not on the Map")
         }else if(!searchCompletionStatus && pathToAstrid.count == 0){
-            print("First, Search For Astrid")
-        } else if(searchCompletionStatus && pathToAstrid.count>0){
+            print("\n\nFirst, Search For Astrid!!\n")
+        }/** - 1st else if statement ends**/ else if(searchCompletionStatus && pathToAstrid.count>0 && !rescueCompletionStatus){
             
             // # Check if the Astrid is already being rescued or not??
             // code here
             // 1. Generate and display the easiest path to Astrid
-            print("Starting quest\n  Generating the easiest path to Astrid....\n  Path found. The easiest path to Astrid is: \(pathToAstrid)")
+            print("Starting quest\n  Generating the easiest path to Astrid....\n  Path found. The easiest path to Astrid is: \(pathToAstrid)\n")
             
             // -Loop for executing the rescueing operation at all the locations leading to astrid
             for currentLocation in pathToAstrid {
@@ -291,10 +248,8 @@ class SearchForLove {
                  */
                 // staring the fight for current Location
                 let fight = Fight(hero, currentLocation.monster, gameCharacterTurn: hero)
-                
                 // -keeping the turn count
                 var turnCount = 1
-               
                 let heroIntialHealthPoints = hero.maxHealthPoints
                 let monsterIntialHealthPoints = currentLocation.monster.maxHealthPoints
                 
@@ -308,6 +263,7 @@ class SearchForLove {
                     print("Current Turn is: \(fight.characterTurn)")
                     print("\(hero) HP: \(heroCurrentHealthPoints)/\(heroIntialHealthPoints)")
                     print("\(currentLocation.monster) HP: \(monsterCurrentHealthPoints)/\(monsterIntialHealthPoints)")
+                    // -If current turn is for HERO
                     if(fight.characterTurn.characterRole == "HERO"){
                         
                         // - Displaying available Hero Moves
@@ -337,33 +293,41 @@ class SearchForLove {
                             break
                         }
                         
-                        // increment turn count
-                        turnCount += 1
-                        // -Switching Turns for the Game Character
-                        if(fight.characterTurn.characterRole == "HERO"){
-                            fight.characterTurn = currentLocation.monster
-                        } else{
-                            fight.characterTurn = hero
-                        }
+                    }else{
+                        // -else current turn is for MONSTER
+                        /**
+                          - used Forced Unwrapping as the userInput is already being validated
+                          - performing action as per user input after unwrapping the value
+                         */
+                        // -As Monster have only one available action that is: Attack(rawValue: 1)
+                        fight.performTurn(1)
                         
+                    }
+                    // increment turn count
+                    turnCount += 1
+
+                    // -Switching Turns for the Game Character
+                    if(fight.characterTurn.characterRole == "HERO"){
+                        fight.characterTurn = currentLocation.monster
+                    } else{
+                        fight.characterTurn = hero
                     }
                 }
                 // -while loop ends
                 if(fight.isFightOver){
-                    
                     // -Update the rescueCompletionStatus as the rescue completed
-//                    self.rescueCompletionStatus = true
+                    self.rescueCompletionStatus = true
                     break
                 }
-                
-                
             } // -for loop ends
-        } // -else if statement ends
-    }
-    
-    func startFightOverSequence(_ fight: Fight){
-        
-        
+        } /** - 2nd else if statement ends**/ else if(searchCompletionStatus && pathToAstrid.count>0 && rescueCompletionStatus){
+            if(hero.winner == 1){
+                print("  Hugie already rescued Astrid!!\n\n")
+            }else{
+                print("  Hugie was unable to rescue Astrid!!\n\n")
+            }
+            
+        }  /** - 3rd else if statement ends**/
     }
     
     func getHeroMoves(){
