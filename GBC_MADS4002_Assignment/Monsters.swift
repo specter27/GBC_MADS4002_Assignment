@@ -7,5 +7,34 @@
 
 import Foundation
 class Monsters : GameCharcter{
-    var attackPower:Int = 0
+    
+    // -strored properties
+    var attackPower:Int
+    
+    // - computed properties (always var, never let)
+    var isAttackCriticalMiss: Bool{
+        get{
+            var criticalMiss: Bool = false
+            /**
+              #Requirement
+               - There is a 20% chance that the monster’s attack will miss
+                 that's why 1...5 .
+             */
+            if(Int.random(in: 1...5) == 3){
+                criticalMiss = true
+            }
+            return criticalMiss
+        }
+
+    }
+    
+    // -Default intializier
+    init(name: String) {
+        
+        // #1. intialize the child class unique properties
+        self.attackPower = Int.random(in: 10...30)
+        
+        // #2. call parent intializer
+        super.init(name: name, characterRole: "MONSTER")
+    }
 }
