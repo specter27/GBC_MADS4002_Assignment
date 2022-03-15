@@ -88,6 +88,11 @@ class Fight{
          Initializing from a Raw Value
          If you define an enumeration with a raw-value type, the enumeration automatically receives an initializer that takes a value of the raw value’s type (as a parameter called rawValue) and returns either an enumeration case or nil.
          */
+        // -Checking the health of game characters BEFORE performing action
+        if(!checkHealth()){
+            return
+        }
+        
         let action = heroActions(rawValue: actionValue)!
         switch action{
         case .attack:
@@ -105,6 +110,30 @@ class Fight{
             self.isFightOver = true
         }
         
+        // -Checking the health of game characters AFTER performing action
+        if(!checkHealth()){
+            return
+        }
+        
+    }
+    
+    /**This function will check health of GameCharacters & return FALSE if either of there health is reduced to a value zero or -ve**/
+    private func checkHealth() -> Bool{
+        var health: Bool = true
+        // -Fight end based on health points
+        if(hero.maxHealthPoints<=0 || monster.maxHealthPoints<=0){
+            health = false
+            isFightOver = true
+            
+            // -hero is the winner
+            if(hero.maxHealthPoints>0){
+               hero.winner=1
+            }else{
+               // -monster is the winner
+               monster.winner=1
+            }
+        }
+        return health
     }
     /**
      OUTPUT depends on the string returned by overriden description String of the CustomStringConvertible(Protocol)

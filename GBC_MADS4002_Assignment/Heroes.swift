@@ -79,6 +79,11 @@ class Heros : GameCharcter{
         }
         return re
     }
+    
+    // -This function will RESET the hero's health
+    func resetHealth(){
+        self.maxHealthPoints = 95
+    }
 
 }
 

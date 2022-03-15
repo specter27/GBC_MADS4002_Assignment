@@ -233,8 +233,7 @@ class SearchForLove {
             print("\n\nFirst, Search For Astrid!!\n")
         }/** - 1st else if statement ends**/ else if(searchCompletionStatus && pathToAstrid.count>0 && !rescueCompletionStatus){
             
-            // # Check if the Astrid is already being rescued or not??
-            // code here
+            
             // 1. Generate and display the easiest path to Astrid
             print("Starting quest\n  Generating the easiest path to Astrid....\n  Path found. The easiest path to Astrid is: \(pathToAstrid)\n")
             
@@ -258,6 +257,7 @@ class SearchForLove {
                     
                     let heroCurrentHealthPoints = hero.maxHealthPoints
                     let monsterCurrentHealthPoints = currentLocation.monster.maxHealthPoints
+                   
                     
                     print("---------Turn #: \(turnCount)---------\n")
                     print("Current Turn is: \(fight.characterTurn)")
@@ -281,18 +281,6 @@ class SearchForLove {
                          */
                         fight.performTurn(Int(userInput!)!)
                         
-                        // -checking if the fight is over or not
-                        if(fight.isFightOver){
-                            print("Fight is over\nFinal stats:\n")
-                            print("\(hero) HP: \(heroCurrentHealthPoints)/\(heroIntialHealthPoints)")
-                            print("\(currentLocation.monster) HP: \(monsterCurrentHealthPoints)/\(monsterIntialHealthPoints)")
-                            // -Checking & Displaying the winner
-                            print("Winner is: \(hero.winner == 1 ? hero : currentLocation.monster)")
-                            // -Displaying Final Message
-                            print("\(hero.winner == 1 ? "You rescued Astrid! Congratulations!\n\n" : "You are unable to rescue Astrid!\n\n")")
-                            break
-                        }
-                        
                     }else{
                         // -else current turn is for MONSTER
                         /**
@@ -303,24 +291,43 @@ class SearchForLove {
                         fight.performTurn(1)
                         
                     }
-                    // increment turn count
+                    /**
+                     #Task 1:
+                      -checking if the fight is over or not and was astrid at the Current Location **/
+                    if(fight.isFightOver){
+                        print("\n\nFight is over\nFinal stats:\n")
+                        print("\(hero) HP: \(hero.maxHealthPoints)/\(heroIntialHealthPoints)")
+                        print("\(currentLocation.monster) HP: \(currentLocation.monster.maxHealthPoints)/\(monsterIntialHealthPoints)")
+                        // -Checking & Displaying the winner
+                        print("Winner is: \(hero.winner == 1 ? hero : currentLocation.monster)\n\n")
+                        break
+                    }
+                    // #Task 2: increment turn count
                     turnCount += 1
-
-                    // -Switching Turns for the Game Character
+                    // #Task 3: Switching Turns for the Game Character
                     if(fight.characterTurn.characterRole == "HERO"){
                         fight.characterTurn = currentLocation.monster
                     } else{
                         fight.characterTurn = hero
                     }
-                }
-                // -while loop ends
-                if(fight.isFightOver){
+                } // -while loop ends
+                /** -checking if the fight is over AND astrid is at the Current Location **/
+                if(fight.isFightOver && currentLocation.astridIsHere){
+                    
+                    // -Displaying Final Message
+                    print("\(hero.winner == 1 ? "You rescued Astrid! Congratulations!\n\n" : "You are unable to rescue Astrid!\n\n")")
+                    
                     // -Update the rescueCompletionStatus as the rescue completed
                     self.rescueCompletionStatus = true
                     break
                 }
+                
+                // -Reseting the Hero healthPoints for the Fight at next Location
+                hero.resetHealth()
             } // -for loop ends
-        } /** - 2nd else if statement ends**/ else if(searchCompletionStatus && pathToAstrid.count>0 && rescueCompletionStatus){
+        } /** - 2nd else if statement ends**/
+        // -Check if the Astrid is already being rescued or not??
+        else if(searchCompletionStatus && pathToAstrid.count>0 && rescueCompletionStatus){
             if(hero.winner == 1){
                 print("  Hugie already rescued Astrid!!\n\n")
             }else{

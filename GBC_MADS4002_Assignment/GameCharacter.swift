@@ -31,7 +31,7 @@ class GameCharcter {
      */
     init(name:String, characterRole: String){
         self.name = name
-        self.healthPoints = Int.random(in: 80...100)
+        self.healthPoints = Int.random(in: 90...100)
         self.characterRole = characterRole
         // -By default no character wins
         self.winner = 0
