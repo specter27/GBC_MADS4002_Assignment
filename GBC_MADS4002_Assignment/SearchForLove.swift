@@ -312,18 +312,30 @@ class SearchForLove {
                     }
                 } // -while loop ends
                 /** -checking if the fight is over AND astrid is at the Current Location **/
-                if(fight.isFightOver && currentLocation.astridIsHere){
+                if(fight.isFightOver){
                     
                     // -Displaying Final Message
                     print("\(hero.winner == 1 ? "You rescued Astrid! Congratulations!\n\n" : "You are unable to rescue Astrid!\n\n")")
                     
-                    // -Update the rescueCompletionStatus as the rescue completed
-                    self.rescueCompletionStatus = true
-                    break
+                    /**
+                     #Checking weather rescue is completed or not
+                     - Hero will go to next location only when: hero wins AND astrid was not at the location
+                     */
+                    if(hero.winner == 1 && !currentLocation.astridIsHere){
+                       continue
+                    }else{
+                        // -Update the rescueCompletionStatus as the rescue completed
+                        self.rescueCompletionStatus = true
+                        break
+                    }
+                    
+                   
                 }
                 
-                // -Reseting the Hero healthPoints for the Fight at next Location
+                // #1. Reseting -> Hero healthPoints for the Fight at next Location
                 hero.resetHealth()
+                // #2. Reseting -> Hero winner flag for the Fight at next Location
+                hero.winner = 0
             } // -for loop ends
         } /** - 2nd else if statement ends**/
         // -Check if the Astrid is already being rescued or not??
