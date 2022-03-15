@@ -36,9 +36,9 @@ class SearchForLove {
     }
     
     func generateWorldMap() -> Map{
-//        print("count of copyofWorldLocations: \(copyofWorldLocations.count)\ncount of copyofMonsterNames: \(copyofMonsterNames.count)")
+
         
-        print("Generating World Map......")
+//        print("Generating World Map......")
         
         // #1. Generating random Index for getting Location & Monster
         let randomMonsterIndex = Int.random(in: 0...copyofMonsterNames.count-1)
@@ -71,7 +71,7 @@ class SearchForLove {
             copyofMonsterNames.remove(at: randomMonsterIndex)
             copyofWorldLocations.remove(at: randomLocationIndex)
         }
-        print("World Map Generated!!")
+//        print("World Map Generated!!")
         return mapOrigin;
         
     }
@@ -233,7 +233,6 @@ class SearchForLove {
             print("\n\nFirst, Search For Astrid!!\n")
         }/** - 1st else if statement ends**/ else if(searchCompletionStatus && pathToAstrid.count>0 && !rescueCompletionStatus){
             
-            
             // 1. Generate and display the easiest path to Astrid
             print("Starting quest\n  Generating the easiest path to Astrid....\n  Path found. The easiest path to Astrid is: \(pathToAstrid)\n")
             
@@ -314,16 +313,20 @@ class SearchForLove {
                 /** -checking if the fight is over AND astrid is at the Current Location **/
                 if(fight.isFightOver){
                     
-                    // -Displaying Final Message
-                    print("\(hero.winner == 1 ? "You rescued Astrid! Congratulations!\n\n" : "You are unable to rescue Astrid!\n\n")")
-                    
                     /**
                      #Checking weather rescue is completed or not
                      - Hero will go to next location only when: hero wins AND astrid was not at the location
                      */
                     if(hero.winner == 1 && !currentLocation.astridIsHere){
+                        
+                        // #1. Reseting -> Hero healthPoints for the Fight at next Location
+                        hero.resetHealth()
+                        // #2. Reseting -> Hero winner flag for the Fight at next Location
+                        hero.winner = 0
                        continue
                     }else{
+                        // -Displaying Final Message
+                        print("\(hero.winner == 1 ? "You rescued Astrid! Congratulations!\n\n" : "You are unable to rescue Astrid!\n\n")")
                         // -Update the rescueCompletionStatus as the rescue completed
                         self.rescueCompletionStatus = true
                         break
@@ -332,10 +335,7 @@ class SearchForLove {
                    
                 }
                 
-                // #1. Reseting -> Hero healthPoints for the Fight at next Location
-                hero.resetHealth()
-                // #2. Reseting -> Hero winner flag for the Fight at next Location
-                hero.winner = 0
+                
             } // -for loop ends
         } /** - 2nd else if statement ends**/
         // -Check if the Astrid is already being rescued or not??
